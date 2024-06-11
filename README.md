@@ -6,9 +6,10 @@ A repo of PKGBUILD's for my arch install, for patching official/AUR packages, or
 
 Add:
 ```
-[REPONAME]
-Git = https://github.com/locked-out/custom_packages/
+[custom_packages]
+Url = https://github.com/locked-out/custom_packages
 Depth = 2
+GenerateSrcinfo
 ```
 
 To `paru.conf` and run `paru -Sya` to sync the repo!
