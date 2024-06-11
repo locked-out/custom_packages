@@ -1,0 +1,40 @@
+# Maintainer: Oliver Locke <oliver@lockenet.com.au>
+
+pkgname="mipsy"
+pkgver=r491.7edd349
+pkgrel=1
+pkgdesc="Education-focused MIPS Emulator written in Rust"
+arch=("x86_64")
+url="https://github.com/insou22/mipsy"
+depends=("glibc" "gcc-libs")
+makedepends=("rust" "cargo" "git")
+provides=("mipsy")
+conflicts=("mipsy")
+source=("$pkgname::git+https://github.com/insou22/mipsy.git")
+sha256sums=("SKIP")
+options=(!lto)
+
+pkgver() {
+  cd "$pkgname"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() (
+  cd "$pkgname"
+  export RUSTUP_TOOLCHAIN=stable
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+)
+
+build() {
+  cd "$pkgname"
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release --package "$pkgname"
+}
+
+package() {
+  cd "$pkgname"
+
+  install -Dm0755 -t "$pkgdir/usr/bin/" "target/release/$pkgname"
+  install -Dm644 "README.md" "$pkgdir/usr/share/doc/${pkgname}/README.md"
+}
